@@ -9,13 +9,14 @@ uint32_t size = 1024 * 1024 - 8;
 float randomf(float minf, float maxf) {return minf + (rand()%(1UL << 31))*(maxf - minf) / (1UL << 31);} 
 
 #define USER_BTN  PI11 
-#define WIDTH 160// 240 //120
-#define HEIGHT 90//136 //68
+#define WIDTH 160
+#define HEIGHT 90
 #define SCR HEIGHT*WIDTH
-#define SCL 3
+#define SCL 4
 
   int lim = 128;
   int dirs = 9;
+  int patt = 0;
 
   float *pat = (float*)malloc(size);
   float *pnew = (float*)malloc(size);
@@ -32,6 +33,7 @@ void rndrule(){
 
   lim = 96 + rand()%96;
   dirs = 6 + rand()%7;
+  patt = rand()%3;
   
 }
 
@@ -118,9 +120,12 @@ void loop(){
           if (pvar[l+SCR*i] <= vmin) { vmin = pvar[l+SCR*i]; imin = i; }
           if (pvar[l+SCR*i] >= vmax) { vmax = pvar[l+SCR*i]; imax = i; }
         }
-
-      for(int i=imin; i<=imax; i++) pnew[l] += prange[l+SCR*i] + pvar[l+SCR*i]/2.0f;
-       
+        
+        switch(patt){
+          case 0: for(int i=0; i<=imin; i++)    pnew[l] += prange[l+SCR*i]; break;
+          case 1: for(int i=imin; i<=imax; i++) pnew[l] += prange[l+SCR*i]; break;
+          case 2: for(int i=imin; i<=imax; i++) pnew[l] += prange[l+SCR*i] + pvar[l+SCR*i] / 2.0f; break;
+        } 
       }
  
       float vmin = MAXFLOAT;
